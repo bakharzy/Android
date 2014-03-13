@@ -21,7 +21,7 @@
        
        <TextView 
             android:id="@+id/tvName"
-       		android:layout_width="50dp"
+       		android:layout_width="100dp"
         	android:layout_height="wrap_content"
         	android:text="Name"
         	android:layout_alignBaseline="@+id/etName"/>
@@ -31,40 +31,26 @@
         	android:layout_height="wrap_content"
         	android:layout_toRightOf="@+id/tvName"/>
        <TextView 
-            android:id="@+id/tvCountry"
-       		android:layout_width="50dp"
+            android:id="@+id/tvUsername"
+       		android:layout_width="100dp"
         	android:layout_height="wrap_content"
         	android:layout_below="@+id/tvName"
-        	android:text="Country"
-        	android:layout_alignBaseline="@+id/etCountry"/>
-       <EditText 
-            android:id="@+id/etCountry"
-       		android:layout_width="150dp"
-        	android:layout_height="wrap_content"
-        	android:layout_toRightOf="@+id/tvCountry"
-        	android:layout_below="@+id/etName"/>
-       <TextView 
-            android:id="@+id/tvTwitter"
-       		android:layout_width="50dp"
-        	android:layout_height="wrap_content"
-        	android:layout_below="@+id/tvCountry"
-        	android:text="Twitter"
-        	android:layout_alignBaseline="@+id/etTwitter"/>
-       <EditText 
-            android:id="@+id/etTwitter"
-       		android:layout_width="150dp"
-        	android:layout_height="wrap_content"
-        	android:layout_toRightOf="@+id/tvTwitter"
-        	android:layout_below="@+id/etCountry"/>
+        	android:text="Username"
+        	android:layout_alignBaseline="@+id/etUsername"/>
+
+       <EditText
+           android:id="@+id/etUsername"
+           android:layout_width="150dp"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/etName"
+           android:layout_toRightOf="@+id/tvUsername" />
+
    </RelativeLayout>
-   
-   <Button 
+
+   <Button
        android:id="@+id/btnPost"
-       android:layout_width="200dp"
+       android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_gravity="center_horizontal"
-       android:text="POST"/>
-   
-
-
+       android:text="POST" />
+	   
 </LinearLayout>

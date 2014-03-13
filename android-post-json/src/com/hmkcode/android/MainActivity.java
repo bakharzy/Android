@@ -4,13 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
+
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,15 +28,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
-import com.hmkcode.android.vo.Person;
+import com.hmkcode.android.vo.Action;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	TextView tvIsConnected;
-	EditText etName,etCountry,etTwitter;
+	EditText etName,etUsername;
 	Button btnPost;
 
-	Person person;
+	Action action;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,8 +45,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// get reference to the views
 		tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 		etName = (EditText) findViewById(R.id.etName);
-		etCountry = (EditText) findViewById(R.id.etCountry);
-		etTwitter = (EditText) findViewById(R.id.etTwitter);
+		etUsername = (EditText) findViewById(R.id.etUsername);
 		btnPost = (Button) findViewById(R.id.btnPost);
 		
 		// check if you are connected or not
@@ -59,7 +63,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 	}
 
-	public static String POST(String url, Person person){
+	public static String POST(String url, Action action){
 		InputStream inputStream = null;
 		String result = "";
 		try {
@@ -75,12 +79,17 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		    // 3. build jsonObject
 		    JSONObject jsonObject = new JSONObject();
-		    jsonObject.accumulate("name", person.getName());
-		    jsonObject.accumulate("country", person.getCountry());
-		    jsonObject.accumulate("twitter", person.getTwitter());
+		    jsonObject.accumulate("name", action.getName());
+		    jsonObject.accumulate("username", action.getUsername());
+		    jsonObject.accumulate("options", action.getOptions());
+	
+		    ObjectMapper mapper = new ObjectMapper();
+		    
+            String value = mapper.writeValueAsString(action);
+            json = value;
 		    
 		    // 4. convert JSONObject to JSON to String
-		    json = jsonObject.toString();
+		   // json = jsonObject.toString();
 
 		    
 		    // ** Alternative way to convert Person object to JSON string usin Jackson Lib 
@@ -126,7 +135,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					if(!validate())
 						Toast.makeText(getBaseContext(), "Enter some data!", Toast.LENGTH_LONG).show();
 					// call AsynTask to perform network operation on separate thread
-					new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
+					new HttpAsyncTask().execute("http://data-bakharzy.rhcloud.com/api/app/applications/70dff194-2871-4ad8-9795-3f27f0021713/actions");
 				break;
 			}
 			
@@ -145,12 +154,15 @@ public class MainActivity extends Activity implements OnClickListener {
         @Override
         protected String doInBackground(String... urls) {
              
-        	person = new Person();
-        	person.setName(etName.getText().toString());
-        	person.setCountry(etCountry.getText().toString());
-        	person.setTwitter(etTwitter.getText().toString());
+        	action = new Action();
+		    Map<String, String> map = new HashMap<String,String>();
+            map.put("network", "Wifi");
+            map.put("button", "POST-button");
+            action.setOptions(map);
+        	action.setName(etName.getText().toString());
+        	action.setUsername(etUsername.getText().toString());
 
-            return POST(urls[0],person);
+            return POST(urls[0],action);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -163,9 +175,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private boolean validate(){
 		if(etName.getText().toString().trim().equals(""))
 			return false;
-		else if(etCountry.getText().toString().trim().equals(""))
-			return false;
-		else if(etTwitter.getText().toString().trim().equals(""))
+		else if(etUsername.getText().toString().trim().equals(""))
 			return false;
 		else
 			return true;	
