@@ -43,23 +43,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 		
 		// get reference to the views
-		tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 		etName = (EditText) findViewById(R.id.etName);
 		etUsername = (EditText) findViewById(R.id.etUsername);
 		btnPost = (Button) findViewById(R.id.btnPost);
-		
-		// check if you are connected or not
-		if(isConnected()){
-			tvIsConnected.setBackgroundColor(0xFF00CC00);
-			tvIsConnected.setText("You are conncted");
-        }
-		else{
-			tvIsConnected.setText("You are NOT conncted");
-		}
-		
+				
 		// add click listener to Button "POST"
 		btnPost.setOnClickListener(this);
-		
 		
 	}
 
@@ -74,27 +63,11 @@ public class MainActivity extends Activity implements OnClickListener {
 			// 2. make POST request to the given URL
 		    HttpPost httpPost = new HttpPost(url);
 		    
+		    // 3. build json String using Jacksin Library
 		    String json = "";
+		    ObjectMapper mapper = new ObjectMapper(); 
+		    json = mapper.writeValueAsString(action);
 		    
-
-		    // 3. build jsonObject
-		    JSONObject jsonObject = new JSONObject();
-		    jsonObject.accumulate("name", action.getName());
-		    jsonObject.accumulate("username", action.getUsername());
-		    jsonObject.accumulate("options", action.getOptions());
-	
-		    ObjectMapper mapper = new ObjectMapper();
-		    
-            String value = mapper.writeValueAsString(action);
-            json = value;
-		    
-		    // 4. convert JSONObject to JSON to String
-		   // json = jsonObject.toString();
-
-		    
-		    // ** Alternative way to convert Person object to JSON string usin Jackson Lib 
-		    // ObjectMapper mapper = new ObjectMapper();
-		    // json = mapper.writeValueAsString(person); 
 		    
 		    // 5. set json to StringEntity
 		    StringEntity se = new StringEntity(json);
@@ -141,14 +114,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 		}
 	
-    public boolean isConnected(){
-    	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-    	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-    	    if (networkInfo != null && networkInfo.isConnected()) 
-    	    	return true;
-    	    else
-    	    	return false;	
-    }
    
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
